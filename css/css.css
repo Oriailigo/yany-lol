@@ -1,0 +1,427 @@
+/* ========= PALETA Y TIPOGRAFÍA ========= */
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background-color: #fdf8ff;
+    color: #3d2a59;
+    overflow-x: hidden;
+}
+
+h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    color: #7a3db8;
+}
+
+h2 {
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    color: #5a2f88;
+}
+
+p {
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    line-height: 1.6;
+}
+.left-p{
+    text-align: left;
+}
+
+/* Ocultar hasta entrar */
+.hidden { display: none; }
+
+/* ========= PRELOADER ========= */
+#preloader {
+    position: fixed;
+    inset: 0;
+    background: #fdf8ff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.flower {
+    width: 40px;
+    height: 40px;
+    margin: 10px;
+    background: radial-gradient(circle, #d6b4ff, #7a3db8);
+    border-radius: 50%;
+    animation: flower 1s infinite ease-in-out alternate;
+}
+
+.flower:nth-child(2) { animation-delay: .2s; }
+.flower:nth-child(3) { animation-delay: .4s; }
+
+@keyframes flower {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.6); }
+}
+
+/* ========= INTRO ========= */
+#intro {
+    position: fixed;
+    inset: 0;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9000;
+    text-align: center;
+}
+
+.intro-img {
+    width: min(80%, 280px);
+    border-radius: 22px;
+    box-shadow: 0 0 15px rgba(122,61,184,.4);
+}
+
+/* Máquina de escribir */
+.typewriter{
+  overflow: hidden; /* Ensures the content is not revealed until the animation */
+  border-right: 3px solid #7a3db8;
+  white-space: nowrap; /* Keeps the content on a single line */
+  margin: 0 auto; /* Gives that scrolling effect as the typing happens */
+  letter-spacing: .15em; /* Adjust as needed */
+  font-size: 1.5rem;
+  animation: 
+    typing 7.5s steps(40, end),
+    blink-caret .75s step-end infinite;
+}
+
+/* The typing effect */
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+/* The typewriter cursor effect */
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: orange; }
+}
+/* fin de escribir */
+#entrar-btn {
+    margin-top: 30px;
+    padding: 10px 25px;
+    background: #7a3db8;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+/* ========= HERO ========= */
+.hero {
+    text-align: center;
+    padding: 50px 20px;
+    background: linear-gradient(135deg, #d7b8ff, #fff);
+    animation: fadeIn 1.5s ease;
+}
+
+/* ========= SECCIONES ========= */
+.seccion {
+    padding: 40px 20px;
+    text-align: center;
+    animation: fadeIn 1s ease;
+}
+
+/* ========= CARRUSEL ========= */
+/* ========= CARRUSEL ========= */
+/* ===== Paleta y base ===== */
+:root{
+  --violet-1: #f3e9ff;
+  --violet-2: #e6ccff;
+  --violet-3: #c89bff;
+  --violet-4: #8a3db8;
+  --accent: #ffd6f5;
+  --glass: rgba(255,255,255,0.12);
+}
+
+/* Contenedor general */
+.floral-carousel-wrap{
+  display:flex;
+  justify-content:center;
+  padding:20px;
+  background: linear-gradient(180deg, #c0add7, #f5eef5 50%);
+}
+
+/* Carousel box */
+.floral-carousel{
+  position:relative;
+  width:min(96%,900px);
+  max-width:920px;
+  border-radius:18px;
+  padding:18px;
+  box-shadow: 0 10px 30px rgba(122,61,184,0.14), inset 0 1px 0 rgba(255,255,255,0.12);
+  background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(230,210,255,0.25));
+  overflow:visible;
+  --slide-gap: 14px;
+    background-image: url("../infancia/marco2.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* Prev/Next buttons (outside mobile) */
+.fc-btn{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:5;
+  background:linear-gradient(180deg,var(--violet-3),var(--violet-4));
+  color:white;
+  border:none;
+  width:46px;
+  height:46px;
+  border-radius:50%;
+  font-size:24px;
+  cursor:pointer;
+  box-shadow: 0 6px 18px rgba(138,61,184,0.25);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.fc-btn:active{ transform: translateY(-50%) scale(.98); }
+.fc-prev{ left:8px; }
+.fc-next{ right:8px; }
+
+/* Track and slides */
+.fc-track{
+  display:flex;
+  gap:var(--slide-gap);
+  transition: transform .55s cubic-bezier(.22,.9,.3,1), opacity .25s;
+  will-change: transform;
+  padding:10px 60px; /* espacio para botones */
+  touch-action: pan-y;
+
+}
+
+.fc-slide{
+  flex:0 0 calc(100% - (var(--slide-gap))); /* mostramos 1 slide fully */
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:12px;
+  overflow:hidden;
+  background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(230,210,255,0.2));
+  box-shadow: 0 8px 20px rgba(122,61,184,0.08);
+  border: 2px solid rgba(200,150,255,0.14);
+  min-height: 240px;
+  max-height: 60vh;
+  margin-left: 0.5rem;
+}
+
+/* Imagenes unificadas (mismo tamaño y crop si hace falta) */
+.fc-slide img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  aspect-ratio: 16 / 10; /* asegura proporción uniforme */
+  transition: transform .4s ease, filter .35s ease;
+  backface-visibility: hidden;
+}
+
+/* Zoom button */
+.fc-zoom{
+  position:absolute;
+  bottom:12px;
+  right:12px;
+  z-index:6;
+  background: linear-gradient(180deg, #ffffff, var(--violet-2));
+  border:2px solid rgba(138,61,184,0.12);
+  color: var(--violet-4);
+  padding:8px 12px;
+  border-radius:10px;
+  font-size:18px;
+  cursor:pointer;
+  box-shadow: 0 6px 18px rgba(138,61,184,0.12);
+}
+
+/* ===== Modal (fullscreen zoom) ===== */
+.fc-modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  align-items:center;
+  justify-content:center;
+  background: rgba(12,6,20,0.72);
+}
+
+/* modal content frame */
+.fc-modal-content{
+  position:relative;
+  width: min(96%, 1200px);
+  max-width:1200px;
+  margin: 20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:30px;
+  box-sizing:border-box;
+}
+
+/* backdrop glow floral (decorativo) */
+.fc-modal-backdrop{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(600px 200px at 10% 15%, rgba(200,140,255,0.12), transparent 10%),
+    radial-gradient(500px 180px at 85% 85%, rgba(255,200,240,0.08), transparent 10%);
+  pointer-events:none;
+  filter: blur(12px) saturate(120%);
+}
+
+/* floral frame (puede usar imagen) */
+.fc-modal-frame{
+  position:relative;
+  border-radius:20px;
+  padding:26px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.02));
+  box-shadow: 0 20px 50px rgba(80,20,120,0.35), inset 0 0 40px rgba(255,255,255,0.02);
+  border: 10px solid transparent;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* Si tenés una imagen de marco floral, descomenta la línea siguiente y añade floral-frame.png en tu carpeta
+.fc-modal-frame{
+  background-image: url('floral-frame.png');
+  background-size: cover;
+  background-position: center;
+}
+*/
+
+/* Imagen ampliada */
+#fcModalImg{
+  max-width: calc(100% - 40px);
+  max-height: calc(100vh - 120px);
+  border-radius:12px;
+  object-fit:contain;
+  box-shadow: 0 12px 40px rgba(120,30,170,0.42);
+  border:6px solid rgba(255,255,255,0.06);
+  transition: transform .35s ease;
+}
+
+/* close button */
+.fc-close{
+  position:absolute;
+  top:14px;
+  right:14px;
+  background:transparent;
+  color:white;
+  border:none;
+  font-size:34px;
+  cursor:pointer;
+  z-index:6;
+  text-shadow: 0 6px 18px rgba(0,0,0,0.5);
+}
+
+/* Prev/Next nav inside modal */
+.fc-nav{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  background:rgba(255,255,255,0.08);
+  color:white;
+  border:none;
+  width:64px;
+  height:64px;
+  border-radius:50%;
+  font-size:34px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:6;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+}
+.fc-nav-prev{ left:28px; }
+.fc-nav-next{ right:28px; }
+
+/* small screens adjustments */
+@media (max-width:720px){
+  .fc-btn{ width:40px;height:40px;font-size:20px; }
+  .fc-track{ padding:8px 40px; }
+  .fc-slide{ min-height:200px; }
+  .fc-nav{ width:52px;height:52px;font-size:28px; }
+  .fc-modal-content{ padding:18px; }
+}
+
+/* subtle fade for slides */
+.fc-slide:not(.is-active) img{ filter: saturate(.8) brightness(.9) ; transform: scale(1.02); opacity:.92; }
+.fc-slide.is-active img{ filter: none; transform: scale(1); opacity:1; }
+
+
+/* ========= VIDEOS GRID ========= */
+.videos-grid {
+    display: grid;
+    gap: 25px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    padding: 10px;
+}
+
+.videos-flex {
+    display: flex;
+    columns: 1fr;
+    gap: 2rem;
+    padding: 10px;
+}
+/* ========= VIDEO CARD ========= */
+.achicar{
+    width: 58%;
+}
+.w-20{
+    width: 60%!important;;
+}
+
+.video-card {
+    padding: 15px;
+    background-image: url("../infancia/marco2.png"); /* Imagen de fondo floral */
+    background-size: cover;
+    background-position: center;
+    border-radius: 30px;
+    box-shadow: 0 4px 25px rgba(0,0,0,0.15);
+    border: 4px solid #d6b4ff;
+    animation: fadeIn 1.3s ease;
+}
+
+.video-card video {
+    width: 100%;
+    border-radius: 22px;
+    border: 3px dashed #b27cff;
+}
+/* video horizontal */
+.video-card2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-card2 video {
+    width: 100%;
+    height: 70%; /* mantiene su altura original */
+    border-radius: 22px;
+    border: 3px dashed #b27cff;
+}
+
+
+/* ========= DEDICATORIA ========= */
+.dedicatoria {
+    text-align: center;
+    padding: 50px 30px;
+    background: #f4e6ff;
+    margin-top: 40px;
+    border-top: 6px solid #d6b4ff;
+}
+
+/* ========= ANIMACIONES ========= */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
