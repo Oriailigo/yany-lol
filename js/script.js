@@ -95,6 +95,8 @@ let startX = 0;
 let currentTranslate = 0;
 let prevTranslate = 0;
 let animationID = 0;
+let rafId = null;
+let pendingX = null;
 const slideWidth = () => {
   const gap = parseFloat(getComputedStyle(track).getPropertyValue('gap')) || 0;
   return slides[0].getBoundingClientRect().width + gap;
@@ -110,6 +112,7 @@ function updateActive(){
   slides.forEach((s,i)=> s.classList.toggle('is-active', i === currentIndex));
 }
 updateActive();
+// apply initial position using translate3d for GPU acceleration
 positionTrack();
 
 // position the track so current slide is visible
@@ -119,7 +122,9 @@ function positionTrack(){
   const spv = getSlidesPerView();
   const maxIndex = Math.max(0, slides.length - spv);
   if (currentIndex > maxIndex) currentIndex = maxIndex;
-  track.style.transform = `translateX(${-currentIndex * w}px)`;
+  // Use translate3d to ensure GPU compositing and smoother motion
+  const x = -currentIndex * w;
+  track.style.transform = `translate3d(${x}px,0,0)`;
 }
 
 // BUTTONS
@@ -150,13 +155,33 @@ function pointerDown(e){
 function pointerMove(e){
   if(!isDragging) return;
   const dx = e.clientX - startX;
-  track.style.transform = `translateX(${ -currentIndex * slideWidth() + dx }px)`;
+  // compute new translate position
+  const base = -currentIndex * slideWidth();
+  pendingX = base + dx;
+  // schedule via rAF to avoid layout thrashing
+  if (!rafId) {
+    rafId = requestAnimationFrame(() => {
+      if (pendingX !== null) {
+        track.style.transform = `translate3d(${pendingX}px,0,0)`;
+      }
+      rafId = null;
+      pendingX = null;
+    });
+  }
 }
 function pointerUp(e){
   if(!isDragging) return;
   isDragging = false;
   const dx = e.clientX - startX;
+  // allow CSS transition again (empty string falls back to stylesheet rule)
   track.style.transition = '';
+  if (rafId) {
+    cancelAnimationFrame(rafId);
+    rafId = null;
+  }
+  // ensure final position is set via translate3d before letting CSS animate
+  const base = -currentIndex * slideWidth();
+  track.style.transform = `translate3d(${base + dx}px,0,0)`;
   if(Math.abs(dx) > 60){
     if(dx < 0) currentIndex = Math.min(currentIndex + 1, Math.max(0, slides.length - getSlidesPerView()));
     else currentIndex = Math.max(currentIndex - 1, 0);
