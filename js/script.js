@@ -4,15 +4,64 @@ setTimeout(() => {
 }, 2000);
 
 /* ===== INTRO ===== */
-document.getElementById("entrar-btn").addEventListener("click", () => {
-    document.getElementById("intro").style.display = "none";
+// Seguridad: comprobamos existencia de elementos antes de operar
+const entrarBtn = document.getElementById('entrar-btn');
+if (entrarBtn) {
+  entrarBtn.addEventListener('click', () => {
+    const intro = document.getElementById('intro');
+    if (intro) {
+      intro.style.display = 'none';
+      intro.setAttribute('aria-hidden','true');
+    }
 
-    document.querySelectorAll(".hidden").forEach(el => {
-        el.classList.remove("hidden");
-    });
+    // Mostrar el contenido principal que estaba oculto (no ocupa espacio)
+    const main = document.getElementById('main');
+    if (main) {
+      main.classList.remove('hidden');
+      main.setAttribute('aria-hidden','false');
+    }
 
-    document.getElementById("musica").play();
-});
+    // Reproducir la música solo si el elemento existe y tiene la función play
+    const musicaEl = document.getElementById('musica');
+    if (musicaEl && typeof musicaEl.play === 'function') {
+      musicaEl.play().catch(() => {
+        // Silenciar errores por bloqueo de autoplay; el usuario ya interactuó.
+        // Si se desea, se puede mostrar un control o aviso aquí.
+      });
+    }
+  });
+}
+
+/* ===== BOTÓN 'VOLVER ARRIBA' ===== */
+// Seguridad: comprueba existencia
+const toTopBtn = document.getElementById('toTopBtn');
+function updateToTopVisibility(){
+  if (!toTopBtn) return;
+  const intro = document.getElementById('intro');
+  const introVisible = intro && intro.style.display !== 'none' && intro.getAttribute('aria-hidden') !== 'true';
+  const scrolled = window.scrollY > 400;
+  if (scrolled && !introVisible){
+    toTopBtn.classList.add('show');
+    toTopBtn.classList.remove('hidden');
+    toTopBtn.setAttribute('aria-hidden','false');
+  } else {
+    toTopBtn.classList.remove('show');
+    toTopBtn.setAttribute('aria-hidden','true');
+    // mantener hidden para que no sea focusable cuando el intro esté visible
+    if (!scrolled) toTopBtn.classList.add('hidden');
+  }
+}
+
+window.addEventListener('scroll', updateToTopVisibility, {passive:true});
+window.addEventListener('resize', updateToTopVisibility);
+window.addEventListener('load', updateToTopVisibility);
+
+if (toTopBtn){
+  toTopBtn.addEventListener('click', (e)=>{
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  // accesible: permitir activar con Enter/Space (ya lo hace porque es <button>)
+}
 
 /* ===== CARRUSEL ===== */
 
@@ -46,7 +95,15 @@ let startX = 0;
 let currentTranslate = 0;
 let prevTranslate = 0;
 let animationID = 0;
-const slideWidth = () => slides[0].getBoundingClientRect().width + parseFloat(getComputedStyle(track).gap || 0);
+const slideWidth = () => {
+  const gap = parseFloat(getComputedStyle(track).getPropertyValue('gap')) || 0;
+  return slides[0].getBoundingClientRect().width + gap;
+};
+
+function getSlidesPerView(){
+  const v = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--slides-per-view'));
+  return (isNaN(v) || v < 1) ? 1 : v;
+}
 
 // INITIAL: set active class
 function updateActive(){
@@ -58,17 +115,23 @@ positionTrack();
 // position the track so current slide is visible
 function positionTrack(){
   const w = slideWidth();
+  // clamp currentIndex so we don't translate past the last fully-visible slide
+  const spv = getSlidesPerView();
+  const maxIndex = Math.max(0, slides.length - spv);
+  if (currentIndex > maxIndex) currentIndex = maxIndex;
   track.style.transform = `translateX(${-currentIndex * w}px)`;
 }
 
 // BUTTONS
 nextBtn.addEventListener('click', ()=> {
-  currentIndex = (currentIndex + 1) % slides.length;
+  const spv = getSlidesPerView();
+  const maxIndex = Math.max(0, slides.length - spv);
+  currentIndex = Math.min(currentIndex + 1, maxIndex);
   positionTrack();
   updateActive();
 });
 prevBtn.addEventListener('click', ()=> {
-  currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+  currentIndex = Math.max(currentIndex - 1, 0);
   positionTrack();
   updateActive();
 });
@@ -95,7 +158,7 @@ function pointerUp(e){
   const dx = e.clientX - startX;
   track.style.transition = '';
   if(Math.abs(dx) > 60){
-    if(dx < 0) currentIndex = Math.min(currentIndex + 1, slides.length - 1);
+    if(dx < 0) currentIndex = Math.min(currentIndex + 1, Math.max(0, slides.length - getSlidesPerView()));
     else currentIndex = Math.max(currentIndex - 1, 0);
   }
   positionTrack();

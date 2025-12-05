@@ -1,25 +1,61 @@
 /* ========= PALETA Y TIPOGRAFÍA ========= */
-body {
-    margin: 0;
-    font-family: "Segoe UI", sans-serif;
-    background-color: #fdf8ff;
-    color: #3d2a59;
-    overflow-x: hidden;
+:root{
+  /* Tipografía */
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-head: 'Poppins', 'Segoe UI', sans-serif;
+  --base-font-size: 16px;
+  --text-color: #3b2a4a; /* ligeramente más oscuro para contraste */
+  --heading-color: #6b2fa6;
+  --muted-color: #6f567a;
+  --text-strong: #34223a; /* color más oscuro para texto sobre fondos claros */
 }
 
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--base-font-size);
+  background-color: #fdf8ff;
+  color: var(--text-color);
+  overflow-x: hidden;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* ===== Smooth scrolling (global) ===== */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .typewriter { animation: none; }
+  .fc-track, .fc-slide, .fc-modal, .to-top { transition: none !important; }
+}
+
+/* Box sizing global para cálculos predecibles */
+*, *::before, *::after { box-sizing: border-box; }
+
 h1 {
-    font-size: clamp(2rem, 5vw, 3rem);
-    color: #7a3db8;
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  color: var(--heading-color);
+  margin: 0.4em 0;
 }
 
 h2 {
-    font-size: clamp(1.6rem, 4vw, 2.2rem);
-    color: #5a2f88;
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  color: #5a2f88;
+  margin: 0.6em 0 0.4em;
 }
 
 p {
-    font-size: clamp(1rem, 2.5vw, 1.2rem);
-    line-height: 1.6;
+  font-size: clamp(0.98rem, 1.6vw, 1.05rem);
+  line-height: 1.7;
+  color: var(--muted-color);
 }
 .left-p{
     text-align: left;
@@ -27,6 +63,14 @@ p {
 
 /* Ocultar hasta entrar */
 .hidden { display: none; }
+
+/* Utilidad para un párrafo destacado */
+.lead {
+  font-size: clamp(1.05rem, 1.9vw, 1.15rem);
+  line-height: 1.85;
+  color: var(--text-color);
+  font-weight: 300;
+}
 
 /* ========= PRELOADER ========= */
 #preloader {
@@ -78,12 +122,14 @@ p {
 
 /* Máquina de escribir */
 .typewriter{
-  overflow: hidden; /* Ensures the content is not revealed until the animation */
-  border-right: 3px solid #7a3db8;
-  white-space: nowrap; /* Keeps the content on a single line */
-  margin: 0 auto; /* Gives that scrolling effect as the typing happens */
-  letter-spacing: .15em; /* Adjust as needed */
-  font-size: 1.5rem;
+  overflow: hidden;
+  border-right: 3px solid var(--heading-color);
+  white-space: nowrap;
+  margin: 0 auto;
+  letter-spacing: .08em;
+  font-size: 1.25rem;
+  font-family: var(--font-head);
+  font-weight: 600;
   animation: 
     typing 7.5s steps(40, end),
     blink-caret .75s step-end infinite;
@@ -112,6 +158,21 @@ p {
     cursor: pointer;
 }
 
+#entrar-btn:hover {
+    background: #6b2fa6;
+}
+
+
+.main-container {
+    padding: 2rem;
+}
+
+/* quitar padding en mobile */
+@media (max-width: 480px) {
+  .main-container { padding: 0; }
+}
+
+
 /* ========= HERO ========= */
 .hero {
     text-align: center;
@@ -137,6 +198,7 @@ p {
   --violet-4: #8a3db8;
   --accent: #ffd6f5;
   --glass: rgba(255,255,255,0.12);
+  --slides-per-view: 1; /* default: 1 slide visible */
 }
 
 /* Contenedor general */
@@ -150,18 +212,15 @@ p {
 /* Carousel box */
 .floral-carousel{
   position:relative;
-  width:min(96%,900px);
+  width:100%;
   max-width:920px;
-  border-radius:18px;
-  padding:18px;
+  border-radius:12px;
+  padding:12px;
+  overflow: hidden; /* evitar que el track provoque scroll horizontal */
   box-shadow: 0 10px 30px rgba(122,61,184,0.14), inset 0 1px 0 rgba(255,255,255,0.12);
   background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(230,210,255,0.25));
-  overflow:visible;
   --slide-gap: 14px;
-    background-image: url("../infancia/marco2.png");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
+    background-image: none; /* background decorative disabled on small screens */
 }
 
 /* Prev/Next buttons (outside mobile) */
@@ -179,7 +238,7 @@ p {
   font-size:24px;
   cursor:pointer;
   box-shadow: 0 6px 18px rgba(138,61,184,0.25);
-  display:flex;
+  display:none; /* hide by default (mobile-first) */
   align-items:center;
   justify-content:center;
   transition: transform .18s ease, box-shadow .18s ease;
@@ -194,13 +253,18 @@ p {
   gap:var(--slide-gap);
   transition: transform .55s cubic-bezier(.22,.9,.3,1), opacity .25s;
   will-change: transform;
-  padding:10px 60px; /* espacio para botones */
+  padding:8px 16px; /* mobile-friendly padding */
   touch-action: pan-y;
+  /* make sure the track itself doesn't force horizontal scroll */
+  width: 100%;
+  align-items: stretch;
 
 }
 
 .fc-slide{
-  flex:0 0 calc(100% - (var(--slide-gap))); /* mostramos 1 slide fully */
+  /* flexible slide width based on slides-per-view to support responsive multi-column carousel */
+  /* restar los gaps totales y dividir por slides-per-view para asegurar que el conjunto no exceda 100% */
+  flex: 0 0 calc((100% - ((var(--slides-per-view) - 1) * var(--slide-gap))) / var(--slides-per-view));
   display:flex;
   align-items:center;
   justify-content:center;
@@ -211,10 +275,32 @@ p {
   border: 2px solid rgba(200,150,255,0.14);
   min-height: 240px;
   max-height: 60vh;
-  margin-left: 0.5rem;
 }
 
-/* Imagenes unificadas (mismo tamaño y crop si hace falta) */
+/* Breakpoints: progressively enhance layout */
+@media (min-width: 720px) {
+  :root{ --slides-per-view: 2; }
+  .floral-carousel{ width: min(96%, 1000px); padding:16px; border-radius:16px; background-image: url("../assets/images/ui/marco2.png"); background-size: cover; background-repeat: no-repeat; background-position: center; }
+  .fc-track{ padding:10px 60px; }
+  .fc-btn{ display:flex; }
+}
+@media (min-width: 1024px) {
+  :root{ --slides-per-view: 3; }
+  .floral-carousel{ width: min(96%, 1200px); }
+}
+
+@media (min-width: 481px) and (max-width:719px){
+  :root{ --slides-per-view: 1; }
+  .fc-btn{ display:flex; }
+}
+
+/* Extra small screens tweaks */
+@media (max-width: 480px){
+  :root{ --slides-per-view: 1; }
+  .fc-track{ padding:8px 12px; }
+  .fc-zoom{ right:8px; bottom:8px; }
+}
+/* imágenes unificadas */
 .fc-slide img{
   width:100%;
   height:100%;
@@ -353,6 +439,39 @@ p {
   .fc-modal-content{ padding:18px; }
 }
 
+/* ===== Custom video controls minimal ===== */
+.custom-controls{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content:flex-start;
+  padding:10px 12px 0 12px;
+}
+.custom-controls .vc-play{
+  background: linear-gradient(180deg,var(--violet-3),var(--violet-4));
+  color: white;
+  border: none;
+  width:40px;
+  height:40px;
+  border-radius:8px;
+  font-size:18px;
+  cursor:pointer;
+}
+.custom-controls .vc-play:active{ transform: scale(.98); }
+.custom-controls .vc-volume-range{
+  -webkit-appearance: none;
+  appearance: none;
+  width: 140px;
+}
+.custom-controls .vc-volume-range::-webkit-slider-runnable-track{ height:6px; background:#e6d6f7; border-radius:6px; }
+.custom-controls .vc-volume-range::-webkit-slider-thumb{ -webkit-appearance:none; width:14px; height:14px; background:#7a3db8; border-radius:50%; margin-top:-4px; }
+.custom-controls .vc-volume-range:focus{ outline: none; }
+
+@media (max-width:480px){
+  .custom-controls{ padding:8px 10px 0 10px; gap:8px; }
+  .custom-controls .vc-volume-range{ width:110px; }
+}
+
 /* subtle fade for slides */
 .fc-slide:not(.is-active) img{ filter: saturate(.8) brightness(.9) ; transform: scale(1.02); opacity:.92; }
 .fc-slide.is-active img{ filter: none; transform: scale(1); opacity:1; }
@@ -382,13 +501,31 @@ p {
 
 .video-card {
     padding: 15px;
-    background-image: url("../infancia/marco2.png"); /* Imagen de fondo floral */
+    background-image: url("../assets/images/ui/marco2.png"); /* Imagen de fondo floral */
     background-size: cover;
     background-position: center;
     border-radius: 30px;
     box-shadow: 0 4px 25px rgba(0,0,0,0.15);
     border: 4px solid #d6b4ff;
     animation: fadeIn 1.3s ease;
+}
+
+/* Mejora de legibilidad: fondo semitransparente para el texto dentro de las tarjetas */
+.video-card{ position: relative; }
+.video-card p{
+    display: block;
+    background: rgba(255,255,255,0.88);
+    color: var(--text-strong);
+    padding: 14px 16px;
+    margin: 12px 6px 0 6px;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(80,20,120,0.06);
+    font-size: 1rem; /* un poco más grande para mejor lectura */
+    line-height: 1.7;
+}
+
+@media (max-width: 720px){
+  .video-card p{ font-size: 0.98rem; padding: 12px; }
 }
 
 .video-card video {
@@ -424,4 +561,38 @@ p {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== Botón 'volver arriba' fijo ===== */
+.to-top{
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(180deg,var(--violet-4), #7a3db8);
+  color: white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size: 20px;
+  box-shadow: 0 8px 20px rgba(122,61,184,0.25);
+  border:none;
+  cursor:pointer;
+  z-index: 9998;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .25s ease, transform .25s ease;
+  pointer-events: none;
+}
+.to-top.show{
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.to-top:focus{ outline: 3px solid rgba(255,255,255,0.18); }
+
+@media (max-width: 480px){
+  .to-top{ right: 12px; bottom: 12px; width:44px; height:44px; font-size:18px; }
 }
